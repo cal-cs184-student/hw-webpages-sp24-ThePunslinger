@@ -1,7 +1,166 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 1 index.html here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A Rasterizer</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 1: Rasterizer</h1>
+<h2 align="middle">SAM CLARK</h2>
+
+<br><br>
+
+    <div>
+
+        <h2 align="middle">Overview</h2>
+        <p>In this assignment, I learned how to do rasterization, anti-aliasing, and other simple tricks to render vector graphics. The programs I’ve created are all about converting vector images to pixels, and using a variety of different methods to do so with efficiency. I’ve implemented basic rasterization (task 1) for the physical image, various ways to determine/sample textures and use that for rasterization (tasks 5 and 6) and some nifty tricks with Barycentric Coordinates and formulas for geometric transformation (tasks 4 and 3).</p>
+        <p></p>
+        <p>I certainly learned how to use C++ better from this homework, so hopefully getting used to that won’t take nearly as long in future assignments. I think I learned the most from rasterization because it’s the one I intuitively understood the best, and actually having to implement the Three Line Test really got me to understand how it worked.</p>
+        <p></p>
+        <p>It was quite helpful to see all these formulas I knew from lecture implemented step-by-step together, though it was also easy for me to get lost. In general, I think I’ve better learned how to “sample” from images in general, which will have many applications for converting those images in the future, whether it’s for texture, triangle rasterization, or even geometric transformations.  </p>
+
+        <h2 align="middle">Section I: Rasterization</h2>
+
+        <h3 align="middle">Part 1: Rasterizing single-color triangles</h3>
+
+        <p>That’s a mighty fine image you have there. Would be a shame if it were just a bunch of triangles. And because of rasterization, it might actually be…</p>
+        <p></p>
+        <p>
+            <b>Triangle Rasterization</b> is a pretty simple concept: instead of representing an image as a complex shape, you divide it up into connected triangles. These triangles are simple to understand and will allow us to perform many calculations that will be useful down the road. The way it works is this:
+        </p>
+        <p></p>
+        <p>First, we divide our image up into pixels and draw the triangle we wish to rasterize. Often, this involves taking 3 points as the vertices and then drawing the triangle as vectors. </p>
+        <p></p>
+        <p>Then, we make a bounding box of pixels that could be inside the triangle. This simply means taking the minimum and maximum x and y coordinates of the triangle vertices and knowing we’ll only need to check coordinates within these bounds.</p>
+        <p></p>
+        <p>Last, we take points and check them to see if they fit within the triangle. This is simply a check using dot products to see if a point is to the “inside” of each edges (the three line test from Lecture 2). In my case, I didn’t really worry about the edges. Simply changing a > to a >= in the Three Line Test was enough to keep them included.  If a point is inside, we color it the color of the triangle! Otherwise, we do nothing. Of course, exactly how we color this point depends on what sort of sampling we’re doing, but in this tasks, it’s just a flat value. </p>
+        <p></p>
+        <p>My algorithm only checks the points on the edges of the triangle because it knows that everything inside will be the same color, but it’s no worse than an algorithm that checks each sample within the bounding box. This is because samples solidly within the bounding box will just be the color; it’s only samples near the edges that might be confusing…</p>
+        <p></p>
+        <img src="images/TASK 1 CS.png" align="middle" width="600px" />
+        <p>Oh, and here’s a PNG Screenshot of basictest4 that has the pixel inspector on some “jaggies,” those jagged little edges between two colors. This jaggedness is a result of aliasing, but we’ll get to that in task 2. </p>
+
+
+        <h3 align="middle">Part 2: Antialiasing triangles</h3>
+        <p>So great; we’ve made an image, but it’s got a bit of jaggedness. You can’t really notice it with high sampling rates, but zoom in, and it all becomes clear. Or rather, it becomes jagged—the image can’t stand that level of resolution without pixelation and “jaggies” showing up.</p>
+        <p></p>
+        <p>Fortunately, <b>supersampling</b> is here to save the day! It’s a technique used for antialiasing, which will get rid of these jagged shapes. It works by taking color samples at several locations in the pixel (instead of just in the center/the “rounded” area) and calculates the color as an average instead of an absolute. This means that there’s less of a stark difference between neighboring pixels (since they’re averaged in color), smoothing things out. I needed to change a few more things, but they either involved calculations of the average color or changes in buffer size to be scaled by the sample_rate. </p>
+        <p></p>
+        <p>Implementing supersampling required small changes in several methods, but essentially boiled down to this: I checked more points within the pixel (sqrt(sample_rate) on each side) to take their colors, then averaged those colors and used it to fill the pixel. </p>
+        <p></p>
+        <p>Well, that’s what shold have happened anyway. I’ve been encountering a lot of errors involving the framebuffer and stuff and at this point; I’m just going to submit without this part completed. Don’t wanna use up any more of my late days than I already have. Hopefully this explanation will show that I knew what I was going for but couldn’t find a way to implement it in time. </p>
+
+
+        <h3 align="middle">Part 3: Transforms</h3>
+        <p>This task was fairly simple, because transformations are just some algorithms using matrix math. Each transformation is simply multiplication by a certain matrix, making it quite easy to simply write down that matrix in each function.</p>
+        <p></p>
+        <p>These functions made moving around the parts of the robot a breeze. I chose to put him in the “Crane Stance” from Karate Kid, using Rotations on his biceps and thighs (plus minor translations, more major translations on his forearms and right quad to get them lined up with the other arm positions, and even scaled his lower legs to make him a bit taller. </p>
+        <p></p>
+        <p>Here’s a picture:</p>
+        <img src="images/TASK 3.png" align="middle" width="600px" />
+
+
+        <h2 align="middle">Section II: Sampling</h2>
+
+        <h3 align="middle">Part 4: Barycentric coordinates</h3>
+        <p>This task involved <b>BARYCENTRIC COORDINATES</b>, so before were go into it, we should describe what Barycentric Coordinates are. Simply put, these are coordinates that are represented as some scaled combination of the vertices of a simplex (in the case of rasterization, the three vertices of a triangle). So for a triangle with vertices A, B, and C, in barycentric coordinates, (x,y) = α⋅A+β⋅B+γ⋅C, where α+β+γ=1. Thus, α, β, and γ are the weights/coefficients.</p>
+        <p></p>
+        <p>This is helpful in rasterization, because it means that there’s a smooth transition between points within the triangle when moving from vertex to vertex. Thus, colors will gradually change with the area between the vertices pulling from the rgb values of the vertices, relative to their location to said vertices.</p>
+        <p></p>
+        <p>Here’s a picture of the <b>Color Wheel</b> using Barycentric Coordinates. </p>
+        <img src="images/TASK 4 CS.png" align="middle" width="600px" />
+
+
+        <h3 align="middle">Part 5: "Pixel sampling" for texture mapping</h3>
+        <p><b>“Pixel Sampling”</b>, quite simply, means taking (u,v) coordinate and acquiring the right texture coordinate (texel). It’s crucial in texture mapping, where we’ll use these texels to give texture to a 2D object. Our initial texels and (u,v) coordinates are the vertices of the rasterized triangles, and Barycentric Coordinates will help us find the other texels/ (u,v) coordinates.</p>
+        <p></p>
+        <p>There are two primary types of pixel sampling: nearest and bilinear. Nearest sampling simply takes the (u, v) coordinates, rounds them to the nearest integer, and generates a texel. You can think of the integer (u,v) coords as the “center” of these points, as all will be rounded to having the same value and texel. It’s very easy to produce, but compared to bilinear sampling, can produce “jaggies.” The better the sampling rate, the less jagged the image.  </p>
+        <p></p>
+        <p>Bilinear sampling, on the other hand, needs a weighted average of the four nearest (u,v) coordinates, using linear interpolations to generate a texel that averages those four neighbors. It is better at antialiasing (if sampling rate is held constant between the two types), and reduces “jaggies”, but it does have a higher computational costs. </p>
+        <p></p>
+        <p>So as mentioned, <b>I can’t show all the images that have been asked for because my Task 2 doesn’t work</b>. However, I can show you two of them:<b>1 sample per pixel for both nearest and bilinear </b>, so here they are:</p>
+
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/TASK 5 NE.png" align="middle" width="400px" />
+                        <figcaption align="middle">Nearest (1 sample per pixel.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/TASK 5 BI.png" align="middle" width="400px" />
+                        <figcaption align="middle">Bilinear (1 sample per pixel).</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <p>You can clearly see that some of the longitude lines are chopped up in nearest samling, while they are preserved in bilinear.</p>
+
+
+        <h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
+        <p>So, what is <b>Level Sampling</b>? Good question! If I asked myself that earlier, I probably could have gotten this done three days ago. Essentially, “level sampling” applies different “levels” to the objects in frame such that we can apply textures based on how close or far an object is from our viewpoint. This involves the use of mipmaps, pre-calculated and optimized sequences of an image, where each level is of a lower and lower resolution. Thus, objects “close” to our viewpoint can use the higher resolution image on the mipmap while objects far away can use lower resolution. </p>
+        <p></p>
+        <p>There were three different ways to find a mipmap level in the code. L_ZERO just says that all images are on the same level, applying the high-level resolution to everything. L_NEAREST rounds L to the nearest integer value of D (D = log base 2 of L), while  L_LINEAR does a linear interpolation (lerp) to get the value between the floor and ceiling (rounded up and rounded down) values of our current L (samples from the adjacent mipmap levels to our current one) . You can see the exact equations for L and D on Lecture 5 Slide 64-65.</p>
+        <p></p>
+        <p>Like before, bilinear sampling is slower than nearest sampling but is better at antialiasing. Both have the same or similar memory cost. For sample rate/the number of samples per pixel, the following happens: </p>
+        <p><b>Speed:</b> Simpler is generally faster, and that’s still true here. Generally, increasing the sampling rate by n times increases the time complexity by n as well. </p>
+        <p><b>Memory Usage:</b> Again, increasing the number of samples per pixel will increase memory complexity by the same factor.</p>
+        <p><b>Anti-Aliasing:</b> Of course, this cost is not without warrant; increased samples per pixel will mean smoother edges. Essentially, you can zoom in further before seeing jaggedness.</p>
+        <p></p>
+        <p>Now, you probably wanna see some images. So here it is. Now you're probably thinking "well wait a minute, Sam! That's an image from the image file! And yeah, an image I found there. Still found it! I'm frankly too tired to figure out how to change my nice image from the GameInformer magazine with great perspective into this, so take off 5 points or something, I think you'll still see the evidence from this picture". </p>
+
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Task 6 4.png" align="middle" width="400px" />
+                        <figcaption align="middle">L_ZERO and P_NEAREST.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Task 6 3.png" align="middle" width="400px" />
+                        <figcaption align="middle">L_ZERO and P_LINEAR.</figcaption>
+                    </td>
+                </tr>
+                <br />
+                <tr>
+                    <td>
+                        <img src="images/Task 6 1.png" align="middle" width="400px" />
+                        <figcaption align="middle">L_NEAREST and P_NEAREST.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Task 6 2.png" align="middle" width="400px" />
+                        <figcaption align="middle">L_NEAREST and P_LINEAR</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        
+
+        <h2 align="middle">Section III: Art Competition</h2>
+
+        <h3 align="middle">Part 7: Draw something interesting!</h3>
+        <p>Yeah, no way. I'm too late to the party anyway. </p>
+
+    </div></body>
 </html>
