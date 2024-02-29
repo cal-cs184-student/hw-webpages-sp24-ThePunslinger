@@ -32,11 +32,11 @@
     <div>
 
         <h2 align="middle">Overview</h2>
-        <p>In this assignment, I learned how to do rasterization, anti-aliasing, and other simple tricks to render vector graphics. The programs I’ve created are all about converting vector images to pixels, and using a variety of different methods to do so with efficiency. I’ve implemented basic rasterization (task 1) for the physical image, various ways to determine/sample textures and use that for rasterization (tasks 5 and 6) and some nifty tricks with Barycentric Coordinates and formulas for geometric transformation (tasks 4 and 3).</p>
+        <p>In this assignment, I learned how to work with meshes and geometric modeling. This was first done through a basic analysis of 1D Bezier curves and how to calculate them with de Casteljau subdivision. This was carried on to the 2D version, Bezier surfaces, using a “moving bezier curve” and calculating them on an n by n grid. </p>
         <p></p>
-        <p>I certainly learned how to use C++ better from this homework, so hopefully getting used to that won’t take nearly as long in future assignments. I think I learned the most from rasterization because it’s the one I intuitively understood the best, and actually having to implement the Three Line Test really got me to understand how it worked.</p>
-        <p></p>
-        <p>It was quite helpful to see all these formulas I knew from lecture implemented step-by-step together, though it was also easy for me to get lost. In general, I think I’ve better learned how to “sample” from images in general, which will have many applications for converting those images in the future, whether it’s for texture, triangle rasterization, or even geometric transformations.  </p>
+	<p>From there, it was onto understanding triangle meshes and the half edge data structure. The bulk of this understanding came through Edge Flip and Edge Split, which forced me to learn what half edges are and what they point to. I got very used to handling functions like face(), twin(), and next() and navigating around the mesh via half-edge structure, which came quite in handy for loop subdivision. </p>
+	<p></p>
+	<p>Overall, I have accustomed myself to the language of geometric modelings and triangular meshes, and can navigate the through code effectively.</p>
 
         <h2 align="middle">Section I: Bezier Curves and Surfaces</h2>
 
