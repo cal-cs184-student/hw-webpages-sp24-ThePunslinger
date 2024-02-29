@@ -47,7 +47,40 @@
 	<p> We recur using the EvaluateStep() function. Each time we do so, we create one fewer point with our interpolation, so what starts as n points becomes n-1, then n-2, and so on. This is because each step uses new p_i = (1-t)p_i + tp_i+1, so we will create one fewer point in our next iteration. This continues until we reach one final point (the red one in these images), which touches the green Bezier curve itself. </p>
 	<p></p>
 	<p>This sequence of images shows the Algorithm in action, with the interpolation of each step shown and another image shown with an altered point location and t value.</p> 
-        <img src="images/TASK 1 CS.png" align="middle" width="600px" />
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/T1-1.png" align="middle" width="400px" />
+                    </td>
+                    <td>
+                        <img src="images/T1-2.png" align="middle" width="400px" />
+                    </td>
+		    <td>
+                        <img src="images/T1-3.png" align="middle" width="400px" />
+                    </td>
+                </tr>
+                <br />
+                <tr>
+                    <td>
+                        <img src="images/T1-4.png" align="middle" width="400px" />
+                    </td>
+                    <td>
+                        <img src="images/T1-5.png" align="middle" width="400px" />
+                    </td>
+		    <td>
+                        <img src="images/T1-6.png" align="middle" width="400px" />
+                    </td>
+                </tr>
+		    <br />
+                <tr>
+                    <td>
+                        <img src="images/Slightly Diff 1.png" align="middle" width="400px" />
+			<figcaption align="middle">Slightly Different Variation.</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
         <h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau (15 pts)</h3>
         <p>So, we’ve used de Casteljau for Bezier curves, but what about for full surfaces? It’s quite easy to do so as long as we’re a little creative and describe this surface as a group of curves.</p>
