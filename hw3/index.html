@@ -70,7 +70,7 @@
 	<p></p>
 	<p>For the heuristic, I wanted some way to determine a splitting point that divided primitives into “left” and “right” nicely. I decided to follow the suggestion on the document and look at the centroids along an axis, except that instead of just using a single access, I would find the best between the x, y, and z axis. We will eventually call construct_bvh() recursively, but only when we’ve found out what axis to use (the one with the smallest bounding boxes and least primitives). I ultimately took the mean centroid coordinate of each axis and chose the best one, probably for a more specific reason than “the spec suggested an average” but honestly for that reason. </p> 
 	<p></p>
-	<p>After rendering a scene with and without BVH acceleration, I can confirm that the BVH acceleration is drastically faster. If I had taken screenshot of when BVH still worked like I had done with pathtracing, I would actualyl have them to show you. But suffice it to say that the cow went from over 45 seconds to less than a quarter of a second</p>
+	<p>After rendering a scene with and without BVH acceleration, I can confirm that the BVH acceleration is drastically faster. If I had taken screenshot of when BVH still worked like I had done with rays, I would actualyl have them to show you. But suffice it to say that the cow went from over 45 seconds to less than a quarter of a second</p>
 	<p></p>
 	    	    
         <h3 align="middle">Part 3: Direct Illumination</h3>
@@ -83,6 +83,9 @@
 	<p>Meanwhile, Importance Sampling is a little different. We shoot rays from the light towards the object, and take those that hit and bounce towards the camera. We get less noise from this, because we are selecting rays that will create light, as compared to Hemisphere Sampling which might give rays that bounce off of non light sources. If the ray intersects a non light source, we cancel it’s emission (ignore it), otherwise we use the same weighting as above courtesy of Monte Carlo. </p>
 	<p></p>
 	<p>There are several differences between hemisphere and importance sampling. Firstly, low sampling rates can cause hemisphere sampling to appear grainy, while importance sampling renders much better regardless of the sample rate. Secondly, while importance sampling reduces noise and increases render quality, this also means there’s less of a contrast in these images. As you can see, the light that hits the top of the spheres (and directly under the source on the ceiling) is much brighter in the hemisphere sample example than the importance sample example.</p>
+
+	<p></p>
+	<p>Oh and surprise, I actually have a few screenshots for this one:</p>
 	<div align="middle">
             <table style="width=100%">
                 <tr>
