@@ -1,7 +1,179 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 3 index.html here
-	</body>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A HW 2</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 3: PATHTRACER</h1>
+<h2 align="middle">SAM CLARK</h2>
+
+<br><br>
+
+    <div>
+
+        <h2 align="middle">Overview</h2>
+        <p>In this assignment, I learned how to generate scenes via ray tracing, paying special attention to the methods used to render said scenes and how to determine the lighting. Part 1 simply lets us generate rays and determine when we are intersecting objects in the scene, so that we can get a general idea/rendering of the scenes. Part 2 follows with an implementation of a Bounding Volume Hierarchy, hastening the process by using a precomputed Binary Tree structure and allowing us to tackle much more complicated and “busy” images with more complex objects.  </p>
+        <p></p>
+	<p>Parts 3 and 4 are all about lighting, determining how rays bounce and how we can use sampling to determine the illuminance of pixels, whether we’re using uniform hemisphere sampling, the softer shadows of importance sampling, or the full complexities of global illumination from multiple bounces of rays off surfaces. Finally, part 5 lets us use adaptive sampling to speed up the process with very little effect on the quality of images, giving a condition for some pixels (those that are pretty clearly of a certain light level from the start) to converge. </p>
+	<p></p>
+	<p>Overall, the images we generated had realistic shadows, realistic shapes, and became much quicker to generate over the course of the project.</p>
+
+        <h3 align="middle">Part 1: Ray Generation and Scene Intersection</h3>
+
+        <p>This part focuses on the generation of rays. To do so, we just use an origin coordinate and a normalized direction vector, and ensure that we’re in the z = -1 space of the virtual camera sensor. Lastly, with the direction determined, we need only to use the camera to world transformation on the vector to create the final ray, originating from the camera.  </p>
+        <p></p>
+	<p>The Triangle Intersection algorithm we used is the Moller Trumbore algorithm. We use barycentric coordinates and the triangle’s vertices to find if the ray represents an intersection. We want our beta, and gamma values of these coordinates to be between 0 and 1 and our alpha value to be within the value range for t of the ray: if this is the case, we intersect, and if we don’t at any point we do not intersect.  </p>
+	<p></p>
+	<p>Spheres are done very similarly, but use the equation for a sphere and use the quadratic equation to complete the sphere. Much of this hinges on the determinant of the quadratic formula: if the determinant is negative, we know there is no intersection. If it is 0 or positive, we have a set of logic to compare the answers of this formula with the minimum and maximum t values to ensure an intersection is had, and if it is, we’ll know how to set the intersection. </p> 
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/T1-1.png" align="middle" width="400px" />
+                    </td>
+                    <td>
+                        <img src="images/T1-2.png" align="middle" width="400px" />
+                    </td>
+		    <td>
+                        <img src="images/T1-3.png" align="middle" width="400px" />
+                    </td>
+                </tr>
+                <br />
+                <tr>
+                    <td>
+                        <img src="images/T1-4.png" align="middle" width="400px" />
+                    </td>
+                    <td>
+                        <img src="images/T1-5.png" align="middle" width="400px" />
+                    </td>
+		    <td>
+                        <img src="images/T1-6.png" align="middle" width="400px" />
+                    </td>
+                </tr>
+		    <br />
+                <tr>
+                    <td>
+                        <img src="images/Slightly Diff 1.png" align="middle" width="400px" />
+			<figcaption align="middle">Slightly Different Variation.</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <h3 align="middle">Part 2: Bounding Volume Hierarchy</h3>
+        <p>BVH, or Bounding Volume Hierarchy, is a way to speed up our path tracer’s rendering by using a precomputed tree when checking for intersections. But first and foremost, it’s a binary tree of nodes, and understanding how we decide the left and right children of each node is crucial. Since each not has a bounding box, left and right children, and the “start” and “end” of the primitives, it’s quite easy to manipulate them how we want:</p>
+        <p></p>
+	<p>First, we look at the recursion of BVH construction. Our “base case” is simple: A node is a leaf node when there are max_leaf_size primitives or less in the list, which ends the recursion and adjusts the start and end iterators. Since we’ve split the group in half once, the new “start” for the right side is the center and the new “end” for the left is the center.  </p>
+	<p></p>
+	<p>For the heuristic, I wanted some way to determine a splitting point that divided primitives into “left” and “right” nicely. I decided to follow the suggestion on the document and look at the centroids along an axis, except that instead of just using a single access, I would find the best between the x, y, and z axis. We will eventually call construct_bvh() recursively, but only when we’ve found out what axis to use (the one with the smallest bounding boxes and least primitives). I ultimately took the mean centroid coordinate of each axis and chose the best one, probably for a more specific reason than “the spec suggested an average” but honestly for that reason. </p> 
+	<p></p>
+	<p>After rendering a scene with and without BVH acceleration, I can confirm that the BVH acceleration is drastically faster. </p>
+	<p></p>
+        <img src="images/Teapot.png" align="middle" width="600px" />
+	    	    
+        <h3 align="middle">Part 3: Direct Illumination</h3>
+        <p>Alright folks, it’s time for Direct Illumination, which uses the illumination produced by the light source itself (zero bounce) and by the initial reflections (first bounce). This method produces an image with relatively realistic lighting, but makes shadows darker and more obscure unless there’s a direct path to it. In this case, it also shrouds the ceiling in shadow, as the first bounces coming from the light source (which is on the ceiling) hit the floor and walls, not the ceiling. It does all this by taking rays from the camera, generating random rays at the point of contact, and sampling the light from the ray that intersects. If it hits the light source, it will be lit, and if it doesn’t, it won’t be. This is why there are more shadows: the ray is random, and since there are limited light sources, many won’t be lit.  </p>
+        <p></p>
+        <p>There are two implementations of Direct Illumination here: uniform hemisphere sampling and importance sampling. Both generate a sample based on the inverse path of a ray flowing from the camera to the scene, but they have different methods of doing so: importance sampling focuses on rays that generate light, while uniform hemisphere sampling just takes samples from everything (resulting in more noise). </p>
+        <p></p>
+	<p>Hemisphere Sampling  happens as follows. We calculate the hit point from the camera, make it an outgoing ray. Then we take random samples in the hemisphere, convert them into the world space, for. If the ray intersects with a light source, we get its emission, multiply the sample by bsdf of the camera object, cosine theta, and the pdf, and then average these to get the L_out. Hey, wait a minute… that sounds like the Monte Carlo estimator!</p>
+	<p></p>
+	<p>Meanwhile, Importance Sampling is a little different. We shoot rays from the light towards the object, and take those that hit and bounce towards the camera. We get less noise from this, because we are selecting rays that will create light, as compared to Hemisphere Sampling which might give rays that bounce off of non light sources. If the ray intersects a non light source, we cancel it’s emission (ignore it), otherwise we use the same weighting as above courtesy of Monte Carlo. </p>
+	<p></p>
+	<p>There are several differences between hemisphere and importance sampling. Firstly, low sampling rates can cause hemisphere sampling to appear grainy, while importance sampling renders much better regardless of the sample rate. Secondly, while importance sampling reduces noise and increases render quality, this also means there’s less of a contrast in these images. As you can see, the light that hits the top of the spheres (and directly under the source on the ceiling) is much brighter in the hemisphere sample example than the importance sample example.</p>
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Teapot Flat Blue.png" align="middle" width="400px" />
+                        <figcaption align="middle">Flat Blue.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Teapot Phong Blue.png" align="middle" width="400px" />
+                        <figcaption align="middle">Phong Blue.</figcaption>
+                    </td>
+                </tr>
+		<br />
+                <tr>
+                    <td>
+                        <img src="images/Teapot Flat White.png" align="middle" width="400px" />
+                        <figcaption align="middle">Flat White.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Teapot Phong White.png" align="middle" width="400px" />
+                        <figcaption align="middle">Phong White.png/figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <h3 align="middle">Part 4: Global Illumination</h3>
+        <p>The indirect lighting function is all about reflections:  how light rays bounce off of the objects in a scene, even when they don’t emit it. This part has taken into account not just the initial bounces of light, but the bounces from those bounces in a recursive function (i.e. the bounces off of intersection points, as these are the “objects” we need to worry about). It makes use of “Russian Roulette” probabilities that some rays may not continue to be traced forever, instead randomly deciding if we’re going to continue tracing or just return the light we have now. If we do continue, we essentially do the whole thing again, generating rays from the intersection point and following them to the next intersection point, where we do the whole thing again. By probability, this won’t continue infinitely, so we won’t need to worry about it.</p>
+	<p></p>
+	<p>For the second and third bounce, we can see these contribute less and less in terms of overall light, but still add together to make a more realistic image. You can see these examples below: the image gets darker and darker overall, but when added together, the subsequent bounces fill in the dark shadow spaces of the image with more subtle shadows and realistic writing. </p>
+	<p></p>
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Standard 4 Tea.png" align="middle" width="400px" />
+                        <figcaption align="middle">Just Teapot.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 4 Tea.png" align="middle" width="400px" />
+                        <figcaption align="middle">Teapot with Flips</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <h3 align="middle">Part 5: Edge split (15 pts)</h3>
+        <p>And last but not least is Adaptive Sampling, a method that avoids using a high number of pixels per sample by concentrating the samples in difficult parts of the images. Thus, it reduces the number of samples for pixels that converge quickly and not for those that converge slowly, “adapting” the sampling to serve parts of the image that actually need it. It was easy to add this in to raytrace_pixel(): thanks to the formula I = 1.96 * sigma / sqrt(n), and then checking to see if this I was ever less than the max tolerance times mu. If this was true, then I simply broke the loop early to save computational power.</p>
+        <p></p>
+        <p>Statistically speaking, the “I” we’ve calculated is a 95% confidence interval, keeping the average illuminance of the pixel between mu + I and  mu - I based on our samples. The number 1.96 is just the z-score of significance at this level. </p>
+	<p></p>
+	<p>The images below show three things: an image without adaptive sampling, one with it, and a “sample rate” image that reveals which areas are “difficult” (in red) and which converge quickly (in blue). This image lines up with what we expect: the central object and the ceiling are red, as they contain the most “confusing” patterns of light and reflections, but the light and the walls (which are fairly straightforward in terms of coloring/illumination) are blue. And since the Adaptive Sampling image looks very similar to the standard image but can be produced more than twice as fast, it’s clearly a useful tool.</p>
+        <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Standard 4 Tea.png" align="middle" width="400px" />
+                        <figcaption align="middle">Standard.</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/JustSplit.png" align="middle" width="400px" />
+                        <figcaption align="middle">Split.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Split and Flip.png" align="middle" width="400px" />
+                        <figcaption align="middle">Split + Flip.</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+    </div></body>
 </html>
