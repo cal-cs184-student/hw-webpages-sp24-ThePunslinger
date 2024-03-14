@@ -149,7 +149,7 @@
         </div>
 
 
-        <h3 align="middle">Part 5: Edge split (15 pts)</h3>
+        <h3 align="middle">Part 5: Adaptive Sample</h3>
         <p>And last but not least is Adaptive Sampling, a method that avoids using a high number of pixels per sample by concentrating the samples in difficult parts of the images. Thus, it reduces the number of samples for pixels that converge quickly and not for those that converge slowly, “adapting” the sampling to serve parts of the image that actually need it. It was easy to add this in to raytrace_pixel(): thanks to the formula I = 1.96 * sigma / sqrt(n), and then checking to see if this I was ever less than the max tolerance times mu. If this was true, then I simply broke the loop early to save computational power.</p>
         <p></p>
         <p>Statistically speaking, the “I” we’ve calculated is a 95% confidence interval, keeping the average illuminance of the pixel between mu + I and  mu - I based on our samples. The number 1.96 is just the z-score of significance at this level. </p>
