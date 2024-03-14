@@ -39,6 +39,8 @@
 	<p></p>
 	<p>Overall, the images we generated had realistic shadows, realistic shapes, and became much quicker to generate over the course of the project.</p>
 
+	<p><b>IMPORTANT NOTE - BROKEN STUFF</b> I lost some of my code because I forgot to push properly and messed things up implementing parts 4 and 5, so some of the stuff here doesn't work properly. But I don't plan to get a 100 on this assignment, or even really a 70 at this point. I have placed what images I can, the explanations I have, and posted my (broken) code to the github. Whelp; I'll have to be more careful for Assignment 4 I guess...</p>
+
         <h3 align="middle">Part 1: Ray Generation and Scene Intersection</h3>
 
         <p>This part focuses on the generation of rays. To do so, we just use an origin coordinate and a normalized direction vector, and ensure that we’re in the z = -1 space of the virtual camera sensor. Lastly, with the direction determined, we need only to use the camera to world transformation on the vector to create the final ray, originating from the camera.  </p>
@@ -113,20 +115,7 @@
 	<p></p>
 	<p>For the second and third bounce, we can see these contribute less and less in terms of overall light, but still add together to make a more realistic image. You can see these examples below: the image gets darker and darker overall, but when added together, the subsequent bounces fill in the dark shadow spaces of the image with more subtle shadows and realistic writing. </p>
 	<p></p>
-        <div align="middle">
-            <table style="width=100%">
-                <tr>
-                    <td>
-                        <img src="images/Standard 4 Tea.png" align="middle" width="400px" />
-                        <figcaption align="middle">Just Teapot.</figcaption>
-                    </td>
-                    <td>
-                        <img src="images/Part 4 Tea.png" align="middle" width="400px" />
-                        <figcaption align="middle">Teapot with Flips</figcaption>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <p>Okay, so we actually can't "see" any of these things because of the aforementioned shenanigans. BUT logic and knowledge from class dictates that my descriptions should be true. As for the second and third bounce, I want you to imagine that there's much more light on the ceiling in the second bounce (it's bouncing off the floor and walls to hit it) but the whole image is darker, and the third bounce to be almost entirely dark but with faint light splotches around the objects in the screen. This will add together to make softer shadows and give the ceiling light, as is anticipated</p>
 
 
         <h3 align="middle">Part 5: Adaptive Sample</h3>
@@ -143,11 +132,11 @@
                 <tr>
                     <td>
                         <img src="images/5 bunny web.png" align="middle" width="400px" />
-                        <figcaption align="middle">Just Teapot.</figcaption>
+                        <figcaption align="middle"> Adaptive Sampling (NOT my generation)</figcaption>
                     </td>
                     <td>
                         <img src="images/5 heatmap web.png" align="middle" width="400px" />
-                        <figcaption align="middle">Teapot with Flips</figcaption>
+                        <figcaption align="middle"> Adaptive Sampling (NOT my generation)</figcaption>
                     </td>
                 </tr>
             </table>
