@@ -1,7 +1,138 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 4 index.html here
-	</body>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A HW 4</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 4: CLOTHSIM</h1>
+<h2 align="middle">SAM CLARK</h2>
+
+<br><br>
+
+    <div>
+
+        <h2 align="middle">Overview</h2>
+        <p>In this project, I created a cloth simulator that followed the laws of physics and created realistic folds, bends and billows. You can essentially think of this project as two major components. The first is a set of rules for the physics of the cloth (particularly the kinematics/motion), as set up in part 1 and expanded upon in part 2. It taught me to think of this cloth structure as a lattice of springs between point masses, a “mesh” which has the cloth texture placed over it. In parts 3 and 4, I allowed this mesh to interact with the world and itself, such that the cloth realistically draped over surfaces or folded on itself when it fell. </p>
+	<p></p>
+	<p>The second component is shaders, as done in part 5. Though technically light is physics, this moved away from the kinematics from before into a study of how to determine texture and color. From the three light components of a Blinn-Phong to the actual geometric changes of Displacement shaders, these shaders made the cloth look more realistic.</p>
+	<p></p>
+	<p>Overall, I think this was my favorite project, mostly because I love animation and movement. It was also nice to sort of have these physics equations beforehand and just kind of plug them in; it felt much more straightforward than mapping out through edges and half-edges as was done in other projects…</p>
+
+        <h3 align="middle">Part 1: Masses and Springs</h3>
+	<p>As you can see, our cloth wireframe is a grid of point masses interconnected by strings to represent various movement types: Structural, Shearing, and Bending. Some of these point masses are “pinned” in place, but many move as the simulation progresses following the three types of springs set up. The following image shows the wireframe’s lattice of springs with different constraints applied:</p>
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/1 Spheres.png" align="middle" width="400px" />
+			 <figcaption align="middle">sphere intersect </figcaption>
+                    </td>
+                    <td>
+                        <img src="images/1 Triangles.png" align="middle" width="400px" />
+			<figcaption align="middle">triangle intersect</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <h3 align="middle">Part 2: Simulation via Numerical Integration</h3>
+        <p>This integration allows for the springs in the cloth to behave realistically in the scene, making the lattice, well, cloth-like. Fortunately for us, we can change some variables around to change the properties of this cloth and the way it interacts with the scene, shown primarily through these three variables:</p>
+        <p>SPRING CONSTANT: Increasing the spring constant makes a “stiffer” spring that requires more force to be pulled or compressed. At lower spring constants, the cloth is not stiff at all, and drapes significantly due to gravitational forces. At high spring constants, the cloth doesn’t drape as much due to gravity, with a more sturdy lattice between the fixed points.</p>
+	<p></p>
+	<p>DENSITY: Raising density has a similar effect to decreasing the spring constant: denser cloth drapes more and has a more bent/draping lattice. This makes sense: the force of gravity is greater on denser cloth, because the acceleration from gravity is constant.  At low density, the cloth barely drapes and seems rather flat. At high density, the cloth drapes significantly (all else equal, of course).</p>
+	<p></p>
+	<p>DAMPING: Raising the damping percentage allows the cloth to wave around less, coming to a stop sooner and acting like a “parachute”. This makes sense: if damping represents forces like friction and air resistance on the cloth, more resistance applied will stop the bouncing/billowing of the cloth made by the force of gravity. With a very high damping percentage, the cloth falls very slowly but stops almost immediately once it reaches the rest position, and at very low damping, it swings back and forth for a very long time (indefinitely, I assume, at 0 damping)</p>
+	<p></p>
+	<p>The following images document changes in spring constant, density, and damping:</p>
+	<p></p>
+	<p>And, here’s the cloth from scene/pinned4.json resting:</p>
+	    
+        <h3 align="middle">Part 3: Collisions with Other Objects</h3>
+        <p>Collisions with other objects (either “spheres” or “planes”) are not terribly hard to do. We essentially see where the cloth would intersect with the object and then “bump it up” to the surface as if that surface is exerting the normal force that it would exert in the physical world. This will cause a cloth on the sphere to drape over it, as the gravity of the scene pulls the parts not stopped by the cloth down. </p>
+	<p></p>
+	<p>Of course, the spring constant (ks) greatly affects this. Higher spring constants make the cloth more rigid, and it doesn’t fall quite as much and is less shaped by the sphere. At high ks, the cloth drapes at an angle and only really is flush with the very top of the sphere, whereas at low ks, the cloth drapes almost entirely downward because of the gravity and rests on much more of the sphere, almost flush with the entire top hemisphere of the sphere and moving directly downwards from there. In the “real world,” higher ks seems to represent a more sturdy or rigid body; a piece of printer paper, for example, might have a higher ks than a standard washcloth.</p>
+	<p></p>
+	<p>Density works inversely; the higher the density, the more the cloth drags itself down around the sphere. This also makes sense, because as mentioned before, the force of gravity is greater on the cloth, and better pulls down the points at the edges that don’t have a sphere to rest on. Here are some images of all of this:</p>
+	<p></p>
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Sphere 1 Uni.png" align="middle" width="400px" />
+                        <figcaption align="middle">Hemisphere with low (4) samples/pixel </figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Sphere 64 Uni.png" align="middle" width="400px" />
+                        <figcaption align="middle">Hemisphere with high (64) samples/pixel.</figcaption>
+                    </td>
+                </tr>
+		<br />
+                <tr>
+                    <td>
+                        <img src="images/Sphere 1 Imp.png" align="middle" width="400px" />
+                        <figcaption align="middle">Importance with low (4) samples/pixel.</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Sphere 64 Imp.png" align="middle" width="400px" />
+                        <figcaption align="middle">Importance with high (64) samples/pixel</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+	<p>And here’s the cloth resting on a plane. Default parameters are used.</p>
+
+        <h3 align="middle">Part 4: Global Illumination</h3>
+        <p>The indirect lighting function is all about reflections:  how light rays bounce off of the objects in a scene, even when they don’t emit it. This part has taken into account not just the initial bounces of light, but the bounces from those bounces in a recursive function (i.e. the bounces off of intersection points, as these are the “objects” we need to worry about). It makes use of “Russian Roulette” probabilities that some rays may not continue to be traced forever, instead randomly deciding if we’re going to continue tracing or just return the light we have now. If we do continue, we essentially do the whole thing again, generating rays from the intersection point and following them to the next intersection point, where we do the whole thing again. By probability, this won’t continue infinitely, so we won’t need to worry about it.</p>
+	<p></p>
+	<p>For the second and third bounce, we can see these contribute less and less in terms of overall light, but still add together to make a more realistic image. You can see these examples below: the image gets darker and darker overall, but when added together, the subsequent bounces fill in the dark shadow spaces of the image with more subtle shadows and realistic writing. </p>
+	<p></p>
+        <p>Okay, so we actually can't "see" any of these things because of the aforementioned shenanigans. BUT logic and knowledge from class dictates that my descriptions should be true. As for the second and third bounce, I want you to imagine that there's much more light on the ceiling in the second bounce (it's bouncing off the floor and walls to hit it) but the whole image is darker, and the third bounce to be almost entirely dark but with faint light splotches around the objects in the screen. This will add together to make softer shadows and give the ceiling light, as is anticipated</p>
+
+
+        <h3 align="middle">Part 5: Adaptive Sample</h3>
+        <p>And last but not least is Adaptive Sampling, a method that avoids using a high number of pixels per sample by concentrating the samples in difficult parts of the images. Thus, it reduces the number of samples for pixels that converge quickly and not for those that converge slowly, “adapting” the sampling to serve parts of the image that actually need it. It was easy to add this in to raytrace_pixel(): thanks to the formula I = 1.96 * sigma / sqrt(n), and then checking to see if this I was ever less than the max tolerance times mu. If this was true, then I simply broke the loop early to save computational power.</p>
+        <p></p>
+        <p>Statistically speaking, the “I” we’ve calculated is a 95% confidence interval, keeping the average illuminance of the pixel between mu + I and  mu - I based on our samples. The number 1.96 is just the z-score of significance at this level. </p>
+	<p></p>
+	<p>The images below show three things: an image without adaptive sampling, one with it, and a “sample rate” image that reveals which areas are “difficult” (in red) and which converge quickly (in blue). This image lines up with what we expect: the central object and the ceiling are red, as they contain the most “confusing” patterns of light and reflections, but the light and the walls (which are fairly straightforward in terms of coloring/illumination) are blue. And since the Adaptive Sampling image looks very similar to the standard image but can be produced more than twice as fast, it’s clearly a useful tool.</p>
+        <p></p>
+	<p> Just kidding, there are no images below. It's not working, and with only an hour left, it doesn't seem like I'll fix it in time. Here is an image taken from the website (<b>NOTE: NOT my own image, I just wanna show you what I mean by "red," "blue," and "green"</b>) to show you what I mean by "red" and "blue." This is what should happen, anyways...</p>
+
+	    <div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/5 bunny web.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Adaptive Sampling (NOT my generation)</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/5 heatmap web.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Adaptive Sampling (NOT my generation)</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div></body>
 </html>
