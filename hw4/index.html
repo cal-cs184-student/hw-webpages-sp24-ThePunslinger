@@ -127,34 +127,36 @@
 	<p></p>
 	<p>Of course, the spring constant (ks) greatly affects this. Higher spring constants make the cloth more rigid, and it doesn’t fall quite as much and is less shaped by the sphere. At high ks, the cloth drapes at an angle and only really is flush with the very top of the sphere, whereas at low ks, the cloth drapes almost entirely downward because of the gravity and rests on much more of the sphere, almost flush with the entire top hemisphere of the sphere and moving directly downwards from there. In the “real world,” higher ks seems to represent a more sturdy or rigid body; a piece of printer paper, for example, might have a higher ks than a standard washcloth.</p>
 	<p></p>
-	<p>Density works inversely; the higher the density, the more the cloth drags itself down around the sphere. This also makes sense, because as mentioned before, the force of gravity is greater on the cloth, and better pulls down the points at the edges that don’t have a sphere to rest on. Here are some images of all of this:</p>
+	<p>Density works inversely; the higher the density, the more the cloth drags itself down around the sphere. This also makes sense, because as mentioned before, the force of gravity is greater on the cloth, and better pulls down the points at the edges that don’t have a sphere to rest on.</p>
 	<p></p>
+	<p>Here are some images of all of this at different spring constants:</p>
 	<div align="middle">
             <table style="width=100%">
                 <tr>
                     <td>
-                        <img src="images/Sphere 1 Uni.png" align="middle" width="400px" />
-                        <figcaption align="middle">Hemisphere with low (4) samples/pixel </figcaption>
+                        <img src="images/Part 3 k500.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 500 </figcaption>
                     </td>
                     <td>
-                        <img src="images/Sphere 64 Uni.png" align="middle" width="400px" />
-                        <figcaption align="middle">Hemisphere with high (64) samples/pixel.</figcaption>
+                        <img src="images/Part 3 k5000.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 5000 </figcaption>
                     </td>
-                </tr>
-		<br />
-                <tr>
-                    <td>
-                        <img src="images/Sphere 1 Imp.png" align="middle" width="400px" />
-                        <figcaption align="middle">Importance with low (4) samples/pixel.</figcaption>
-                    </td>
-                    <td>
-                        <img src="images/Sphere 64 Imp.png" align="middle" width="400px" />
-                        <figcaption align="middle">Importance with high (64) samples/pixel</figcaption>
+		    <td>
+                        <img src="images/Part 3 k50000.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 50000 </figcaption>
                     </td>
                 </tr>
             </table>
         </div>
 	<p>And here’s the cloth resting on a plane. Default parameters are used.</p>
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                	<img src="images/Part 3 Plane.png" align="middle" width="600px" />
+                        <figcaption align="middle">Plane and Simple </figcaption>
+                </tr>
+            </table>
+        </div>
 
         <h3 align="middle">Part 4: Self-collisions</h3>
 	<p>The following images show how the cloth falls and folds. As the cloth falls, the bottom collides with the floor and begins to scrunch itself up. By the end, it lies relatively “flat” on the ground, with a few folds and creases leftover from how it fell. While the cloth folding in on itself is fairly realistic, it does sort of “bounce” when it should be flat on the floor because of collisions</p>
