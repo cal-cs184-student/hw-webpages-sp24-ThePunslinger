@@ -102,24 +102,27 @@
         </div>
 	<p>And here’s the cloth resting on a plane. Default parameters are used.</p>
 
-        <h3 align="middle">Part 4: Global Illumination</h3>
-        <p>The indirect lighting function is all about reflections:  how light rays bounce off of the objects in a scene, even when they don’t emit it. This part has taken into account not just the initial bounces of light, but the bounces from those bounces in a recursive function (i.e. the bounces off of intersection points, as these are the “objects” we need to worry about). It makes use of “Russian Roulette” probabilities that some rays may not continue to be traced forever, instead randomly deciding if we’re going to continue tracing or just return the light we have now. If we do continue, we essentially do the whole thing again, generating rays from the intersection point and following them to the next intersection point, where we do the whole thing again. By probability, this won’t continue infinitely, so we won’t need to worry about it.</p>
+        <h3 align="middle">Part 4: Self-collisions</h3>
+	<p>The following images show how the cloth falls and folds. As the cloth falls, the bottom collides with the floor and begins to scrunch itself up. By the end, it lies relatively “flat” on the ground, with a few folds and creases leftover from how it fell. While the cloth folding in on itself is fairly realistic, it does sort of “bounce” when it should be flat on the floor because of collisions</p>
 	<p></p>
-	<p>For the second and third bounce, we can see these contribute less and less in terms of overall light, but still add together to make a more realistic image. You can see these examples below: the image gets darker and darker overall, but when added together, the subsequent bounces fill in the dark shadow spaces of the image with more subtle shadows and realistic writing. </p>
-	<p></p>
-        <p>Okay, so we actually can't "see" any of these things because of the aforementioned shenanigans. BUT logic and knowledge from class dictates that my descriptions should be true. As for the second and third bounce, I want you to imagine that there's much more light on the ceiling in the second bounce (it's bouncing off the floor and walls to hit it) but the whole image is darker, and the third bounce to be almost entirely dark but with faint light splotches around the objects in the screen. This will add together to make softer shadows and give the ceiling light, as is anticipated</p>
+	<p>Now, both density and spring constant affect this. Objects may fall at a constant acceleration (as they do in real life when negating air resistance), but spring constant affects how much (and how easily) the cloth folds on itself. With a higher spring constant, the final cloth state is more “scrunched up.” Similarly, denser cloth is more “scrunched up.”</p>
 
-
-        <h3 align="middle">Part 5: Adaptive Sample</h3>
-        <p>And last but not least is Adaptive Sampling, a method that avoids using a high number of pixels per sample by concentrating the samples in difficult parts of the images. Thus, it reduces the number of samples for pixels that converge quickly and not for those that converge slowly, “adapting” the sampling to serve parts of the image that actually need it. It was easy to add this in to raytrace_pixel(): thanks to the formula I = 1.96 * sigma / sqrt(n), and then checking to see if this I was ever less than the max tolerance times mu. If this was true, then I simply broke the loop early to save computational power.</p>
+        <h3 align="middle">Part 5: Shaders </h3>
+        <p>A shader program allows us to quickly and efficiently render realistically shaded material appearances without using ray tracing or other complicated methods. We’re dealing with two basic shader types: Vertex shaders which apply transforms to geometric objects like modifying their position and normal vectors, and fragment shaders, which process the fragments left by rasterization using the geometric attributes of the fragments as calculated by the vertex shader, assigning color vectors to the pixels in the display to produce the appearance of different materials.</p>
         <p></p>
-        <p>Statistically speaking, the “I” we’ve calculated is a 95% confidence interval, keeping the average illuminance of the pixel between mu + I and  mu - I based on our samples. The number 1.96 is just the z-score of significance at this level. </p>
+	<p>I made a few different types of shaders, but I’ll go into deeper detail on the Blinn-Phong shader. This shader separates the light of the scene into three types: </p>
 	<p></p>
-	<p>The images below show three things: an image without adaptive sampling, one with it, and a “sample rate” image that reveals which areas are “difficult” (in red) and which converge quickly (in blue). This image lines up with what we expect: the central object and the ceiling are red, as they contain the most “confusing” patterns of light and reflections, but the light and the walls (which are fairly straightforward in terms of coloring/illumination) are blue. And since the Adaptive Sampling image looks very similar to the standard image but can be produced more than twice as fast, it’s clearly a useful tool.</p>
-        <p></p>
-	<p> Just kidding, there are no images below. It's not working, and with only an hour left, it doesn't seem like I'll fix it in time. Here is an image taken from the website (<b>NOTE: NOT my own image, I just wanna show you what I mean by "red," "blue," and "green"</b>) to show you what I mean by "red" and "blue." This is what should happen, anyways...</p>
-
-	    <div align="middle">
+	<p>AMBIENT Light, which is just the light reflecting uniformly off of all surfaces in the scene. This is the “flat color” of objects in the scene without accounting for light fallout and the like; just the intensity times a constant. </p>
+	<p></p>
+	<p>DIFFUSE Light, which uses Lambert’s Cosine Law and the illumination from the source (as it falls off over time) to shade, producing a matte appearance that’s brighter as the “diffuse coefficient” increases.</p>
+	<p></p>
+	<p>And SPECULAR Reflections, which creates shading based on the viewer’s perspective (and a “halfway” vector that’s near the normals. This produces a gloss appearance with glare and lighter, reflective highlights as might be seen on metal or mirrors.</p>
+	<p></p>
+	<p>Blinn-Phong is the weighted sum of these components that mimics a material to be shaded: imitating metal, for example, will weigh the Specular Reflection component higher than a flat black piece of construction paper. </p>
+	<p></p>
+	<p>Here are a variety of shaders:</p>
+	    
+	<div align="middle">
             <table style="width=100%">
                 <tr>
                     <td>
@@ -133,6 +136,10 @@
                 </tr>
             </table>
         </div>
-
+	<p></p>
+	<p>The Bump Mapping and Displacement shaders produce fairly different results, with that difference exaggerated at low sample rates. Bump mapping creates bumps by modifying normal vectors and forcing the fragment shader to give the illusion of bumps and details. Meanwhile, Displacement modifies (or rather, displaces) the position of vertices to change the height map and then makes the normals consistent with this new geometry. In other words, Displacement creates actual bumps and changes in geometry that truly modify the shape (at low sampling rates, this can warp it significantly),  while Bump Mapping changes the normals to create the illusion of bumps through fragment shading while leaving the true height map the same.</p>
+	<p></p>
+	<p>We can see how these two maps differ by comparing their performances at 16 by 16 and 128 by 128. At 16 by 16, bump mapping seems better, since the displacement map is weirdly warped and wavy, as if a cloth is wrapped around not a sphere, but the skeleton of one. In the 128 by 128 sample, the Bump Map stays similar (accurately spherical with contours) but the displacement mapping improves markedly: the sphere is clearly spherical, now just with “fuzzy” (or almost “fluffy”) edges that look more like a change in texture than shape (as it should). </p>
+	    
     </div></body>
 </html>
