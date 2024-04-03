@@ -252,12 +252,77 @@
             <table style="width=100%">
                 <tr>
                     <td>
-                        <img src="images/5 bunny web.png" align="middle" width="400px" />
-                        <figcaption align="middle"> Adaptive Sampling (NOT my generation)</figcaption>
+                        <img src="images/Part 5 Ambient 1.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong Just Ambient</figcaption>
                     </td>
                     <td>
-                        <img src="images/5 heatmap web.png" align="middle" width="400px" />
-                        <figcaption align="middle"> Adaptive Sampling (NOT my generation)</figcaption>
+                        <img src="images/Part 5 Ambient 2.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong Just Ambient</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 5 Diffuse 1.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong Just Diffuse</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Diffuse 2.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong Just Diffuse</figcaption>
+                    </td>
+                </tr>
+		<br>
+		<tr>
+                    <td>
+                        <img src="images/Part 5 Spec 1.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong Just Specular</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Spec 2.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong Just Specular</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 5 Phong Full 1.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong with Everything</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Phong Full 2.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Phong with Everything</figcaption>
+                    </td>
+                </tr>
+		<br>
+		<tr>
+                    <td>
+                        <img src="images/Part 5 Bob 1.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Custom Texture</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Bob 2.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Custom Texture</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 5 Mirror 1.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Mirror, Mirror </figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Mirror 2.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Mirror, Mirror </figcaption>
+                    </td>
+                </tr>
+		<br>
+		<tr>
+                    <td>
+                        <img src="images/Part 5 Bump 16.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Bump, with -o 16 -a 16</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Bump 128.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Bump, with -o 128 -a 128</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 5 Disp 16.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Displacement, with -o 16 -a 16</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 5 Disp 128.png" align="middle" width="400px" />
+                        <figcaption align="middle"> Displacement, with -o 128 -a 128</figcaption>
                     </td>
                 </tr>
             </table>
@@ -265,7 +330,7 @@
 	<p></p>
 	<p>The Bump Mapping and Displacement shaders produce fairly different results, with that difference exaggerated at low sample rates. Bump mapping creates bumps by modifying normal vectors and forcing the fragment shader to give the illusion of bumps and details. Meanwhile, Displacement modifies (or rather, displaces) the position of vertices to change the height map and then makes the normals consistent with this new geometry. In other words, Displacement creates actual bumps and changes in geometry that truly modify the shape (at low sampling rates, this can warp it significantly),  while Bump Mapping changes the normals to create the illusion of bumps through fragment shading while leaving the true height map the same.</p>
 	<p></p>
-	<p>We can see how these two maps differ by comparing their performances at 16 by 16 and 128 by 128. At 16 by 16, bump mapping seems better, since the displacement map is weirdly warped and wavy, as if a cloth is wrapped around not a sphere, but the skeleton of one. In the 128 by 128 sample, the Bump Map stays similar (accurately spherical with contours) but the displacement mapping improves markedly: the sphere is clearly spherical, now just with “fuzzy” (or almost “fluffy”) edges that look more like a change in texture than shape (as it should). </p>
+	<p>We can see how these two maps differ by comparing their performances at 16 by 16 and 128 by 128. At 16 by 16, bump mapping seems better, since the displacement map is weirdly warped and wavy, as if a cloth is wrapped around not a sphere, but the skeleton of one. In the 128 by 128 sample, the Bump Map stays similar (accurately spherical with contours) but the displacement mapping improves markedly: the sphere is clearly spherical, now just with “fuzzy” (or almost “fluffy”) edges that look more like a change in texture than shape (as it should). It kind of reminds me of one of those "fluffalos" that elementary schoolers use in gym class.</p>
 	    
     </div></body>
 </html>
