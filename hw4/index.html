@@ -161,8 +161,78 @@
         <h3 align="middle">Part 4: Self-collisions</h3>
 	<p>The following images show how the cloth falls and folds. As the cloth falls, the bottom collides with the floor and begins to scrunch itself up. By the end, it lies relatively “flat” on the ground, with a few folds and creases leftover from how it fell. While the cloth folding in on itself is fairly realistic, it does sort of “bounce” when it should be flat on the floor because of collisions</p>
 	<p></p>
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Part 4 Early Side.png" align="middle" width="400px" />
+                        <figcaption align="middle">Early in Process</figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 4 Mid Side.png" align="middle" width="400px" />
+                        <figcaption align="middle">Middle of Process</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 4 MidLate Side.png" align="middle" width="400px" />
+                        <figcaption align="middle">Late in Process</figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 4 Late Side.png" align="middle" width="400px" />
+                        <figcaption align="middle">End of Process</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+	<p></p>
 	<p>Now, both density and spring constant affect this. Objects may fall at a constant acceleration (as they do in real life when negating air resistance), but spring constant affects how much (and how easily) the cloth folds on itself. With a higher spring constant, the final cloth state is more “scrunched up.” Similarly, denser cloth is more “scrunched up.”</p>
-
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Part 4 d1 Early.png" align="middle" width="400px" />
+                        <figcaption align="middle">density = 1 g/cm^3, Early</figcaption>
+                    </td>
+                    <td>
+                        img src="images/Part 4 d1 Late.png" align="middle" width="400px" />
+                        <figcaption align="middle">density = 1 g/cm^3, Late</figcaption>
+                    </td>
+                </tr>
+		<br>
+		<tr>
+                    <td>
+                        <img src="images/Part 4 d100 Early.png" align="middle" width="400px" />
+                        <figcaption align="middle">density = 100 g/cm^3, Early</figcaption>
+                    </td>
+                    <td>
+                        img src="images/Part 4 d100 Late.png" align="middle" width="400px" />
+                        <figcaption align="middle">density = 100 g/cm^3, Late</figcaption>
+                    </td>
+                </tr>
+		<br>
+		<tr>
+                    <td>
+                        <img src="images/Part 4 k1000 Early.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 1000, Early</figcaption>
+                    </td>
+                    <td>
+                        img src="images/Part 4 k1000 Late.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 1000, Late</figcaption>
+                    </td>
+                </tr>
+		<br>
+		<tr>
+                    <td>
+                        <img src="images/Part 4 k50000 Early.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 50000, Early</figcaption>
+                    </td>
+                    <td>
+                        img src="images/Part 4 k50000 Late.png" align="middle" width="400px" />
+                        <figcaption align="middle">k = 50000, Late</figcaption>
+                    </td>
+                </tr>
+            </table>
+        </div>
+	    
         <h3 align="middle">Part 5: Shaders </h3>
         <p>A shader program allows us to quickly and efficiently render realistically shaded material appearances without using ray tracing or other complicated methods. We’re dealing with two basic shader types: Vertex shaders which apply transforms to geometric objects like modifying their position and normal vectors, and fragment shaders, which process the fragments left by rasterization using the geometric attributes of the fragments as calculated by the vertex shader, assigning color vectors to the pixels in the display to produce the appearance of different materials.</p>
         <p></p>
