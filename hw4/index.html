@@ -45,14 +45,20 @@
             <table style="width=100%">
                 <tr>
                     <td>
-                        <img src="images/1 Spheres.png" align="middle" width="400px" />
-			 <figcaption align="middle">sphere intersect </figcaption>
+                        <img src="images/Part 1 Struct.png" align="middle" width="400px" />
+			 <figcaption align="middle">No Shearing </figcaption>
                     </td>
                     <td>
-                        <img src="images/1 Triangles.png" align="middle" width="400px" />
-			<figcaption align="middle">triangle intersect</figcaption>
+                        <img src="images/Part 1 Shear.png" align="middle" width="400px" />
+			<figcaption align="middle"Only Shearing</figcaption>
                     </td>
                 </tr>
+		<tr>
+		    <td>
+                        <img src="images/Part 1 Flat.png" align="middle" width="400px" />
+			 <figcaption align="middle">Mesh with All Constaints </figcaption>
+                    </td>
+		</tr>
             </table>
         </div>
 
@@ -65,8 +71,56 @@
 	<p>DAMPING: Raising the damping percentage allows the cloth to wave around less, coming to a stop sooner and acting like a “parachute”. This makes sense: if damping represents forces like friction and air resistance on the cloth, more resistance applied will stop the bouncing/billowing of the cloth made by the force of gravity. With a very high damping percentage, the cloth falls very slowly but stops almost immediately once it reaches the rest position, and at very low damping, it swings back and forth for a very long time (indefinitely, I assume, at 0 damping)</p>
 	<p></p>
 	<p>The following images document changes in spring constant, density, and damping:</p>
+
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Part 2 d10.png" align="middle" width="400px" />
+			<figcaption align="middle">density = 10 g/cm^3 </figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 2 d50.png" align="middle" width="400px" />
+			<figcaption align="middle">density = 50 g/cm^3 </figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 2 d500.png" align="middle" width="400px" />
+			<figcaption align="middle">density = 500 g/cm^3 </figcaption>
+                    </td>
+                </tr>
+		<tr>
+		    <td>
+                        <img src="images/Part 2 s500.png" align="middle" width="400px" />
+			<figcaption align="middle">k = 500 </figcaption>
+                    </td>
+                    <td>
+                        <img src="images/Part 2 d10.png" align="middle" width="400px" />
+			<figcaption align="middle">k = 5000 </figcaption>
+                    </td>
+		    <td>
+                        <img src="images/Part 2 s15000.png" align="middle" width="400px" />
+			<figcaption align="middle">k = 15000</figcaption>
+                    </td>
+		</tr>
+            </table>
+        </div>
+	
 	<p></p>
 	<p>And, here’s the cloth from scene/pinned4.json resting:</p>
+	<div align="middle">
+            <table style="width=100%">
+                <tr>
+                    <td>
+                        <img src="images/Part 2 Four Mesh.png" align="middle" width="400px" />
+                    </td>
+                    <td>
+                        <img src="images/Part 2 Four Flats.png" align="middle" width="400px" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+	    
+	<p></p>
 	    
         <h3 align="middle">Part 3: Collisions with Other Objects</h3>
         <p>Collisions with other objects (either “spheres” or “planes”) are not terribly hard to do. We essentially see where the cloth would intersect with the object and then “bump it up” to the surface as if that surface is exerting the normal force that it would exert in the physical world. This will cause a cloth on the sphere to drape over it, as the gravity of the scene pulls the parts not stopped by the cloth down. </p>
